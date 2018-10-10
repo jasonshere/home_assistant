@@ -14,6 +14,7 @@
   <!-- plugin css for this page -->
   <!-- End plugin css for this page -->
   <!-- inject:css -->
+  <link rel="stylesheet" href="https://d3q5poti6uedt7.cloudfront.net/css/calendar.css">
   <link rel="stylesheet" href="https://d3q5poti6uedt7.cloudfront.net/css/style.css">
   <!-- endinject -->
   <link rel="shortcut icon" href="https://d3q5poti6uedt7.cloudfront.net/images/favicon.png" />
@@ -98,15 +99,29 @@
 
           <li class="nav-item">
             <a class="nav-link" href="/humidity">
-              <i class="menu-icon mdi mdi-chart-line"></i>
+              <i class="menu-icon mdi mdi-chart-bar"></i>
               <span class="menu-title">Humidity Reports</span>
             </a>
           </li>
 
           <li class="nav-item">
             <a class="nav-link" href="/temperature">
-              <i class="menu-icon mdi mdi-chart-line"></i>
+              <i class="menu-icon mdi mdi-temperature-fahrenheit"></i>
               <span class="menu-title">Temperature Reports</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="/calendar">
+              <i class="menu-icon mdi mdi-calendar"></i>
+              <span class="menu-title">My Calendar</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="/intruder">
+              <i class="menu-icon mdi mdi-account-alert"></i>
+              <span class="menu-title">Intruder</span>
             </a>
           </li>
           

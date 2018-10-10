@@ -7,75 +7,130 @@ use Illuminate\Http\Request;
 class WeatherStationController extends Controller
 {
 
-    // auth
+    /**
+     *  set auth
+     * 
+     * 
+     */
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-    // show pressure
+    /**
+     *  show pressure chart
+     * 
+     *  render page
+     * 
+     */
     public function pressure()
     {
         return view('pressure');
     }
 
-    // get pressure json
+    /**
+     *  return pressure json for AJAX
+     * 
+     *  render json
+     * 
+     */
     public function getPressure()
     {
         $tableName = 'IoTData';
         $params = [
             'TableName' => $tableName,
-            'Limit' => 10000,            
+            'Limit' => 200,
+            'KeyConditionExpression' => 'device_id = :d',
+            'ExpressionAttributeValues' => [
+                ':d' => ['S' => 'Melbourne-RMIT']
+            ],
+            'ScanIndexForward' => false       
         ];
 
         $db = \App::make('aws')->createClient('dynamodb');
-        $result = $db->scan($params);
+        $result = $db->query($params);
         $items = $this->processData($result['Items'], 'pressure');
         return response()->json(['code' => 1, 'data' => $items]);
     }
 
-    // show humidity
+    /**
+     *  show humidity chart
+     * 
+     *  render page
+     * 
+     */
     public function humidity()
     {
         return view('humidity');
     }
 
-    // get humidity json
+    /**
+     *  return humidity json for AJAX
+     * 
+     *  render json
+     * 
+     */
     public function getHumidity()
     {
         $tableName = 'IoTData';
         $params = [
             'TableName' => $tableName,
-            'Limit' => 10000,            
+            'Limit' => 200,
+            'KeyConditionExpression' => 'device_id = :d',
+            'ExpressionAttributeValues' => [
+                ':d' => ['S' => 'Melbourne-RMIT']
+            ],
+            'ScanIndexForward' => false       
         ];
 
         $db = \App::make('aws')->createClient('dynamodb');
-        $result = $db->scan($params);
+        $result = $db->query($params);
         $items = $this->processData($result['Items'], 'humidity');
         return response()->json(['code' => 1, 'data' => $items]);
     }
 
-    // show temperature
+    /**
+     *  show temperature chart
+     * 
+     *  render page
+     * 
+     */
     public function temperature()
     {
         return view('temperature');
     }
 
-    // get temperature json
+    /**
+     *  return temperature json for AJAX
+     * 
+     *  render json
+     * 
+     */
     public function getTemperature()
     {
         $tableName = 'IoTData';
         $params = [
             'TableName' => $tableName,
-            'Limit' => 10000,            
+            'Limit' => 200,
+            'KeyConditionExpression' => 'device_id = :d',
+            'ExpressionAttributeValues' => [
+                ':d' => ['S' => 'Melbourne-RMIT']
+            ],
+            'ScanIndexForward' => false       
         ];
 
         $db = \App::make('aws')->createClient('dynamodb');
-        $result = $db->scan($params);
+        $result = $db->query($params);
         $items = $this->processData($result['Items'], 'temperature');
         return response()->json(['code' => 1, 'data' => $items]);
     }
 
+    /**
+     *  process data
+     * 
+     *  return array
+     * 
+     */
     protected function processData($items, $type)
     {
         $labels = [];
@@ -89,7 +144,42 @@ class WeatherStationController extends Controller
             $return[$item['device_id']['S']]['labels'][] = date("Y-m-d H:i:s", $item['timestamp']['N']);
             $return[$item['device_id']['S']]['data'][] = $item['data']['M']['sensor_data']['M'][$type]['N'];
         }
+        $return['Melbourne-RMIT']['labels'] = array_reverse($return['Melbourne-RMIT']['labels']);
+        $return['Melbourne-RMIT']['data'] = array_reverse($return['Melbourne-RMIT']['data']);
         return $return;
+    }
+
+    /**
+     *  my calendar
+     * 
+     *  return page
+     */
+    public function calendar()
+    {
+        return view('calendar');
+    }
+
+    /**
+     *  show intruders
+     * 
+     *  render page
+     */
+    public function intruder()
+    {
+        $baseUrl = 'https://s3.amazonaws.com/intruders/';
+        $s3 = \App::make('aws')->createClient('s3');
+        $result = $s3->getIterator('ListObjectsV2', [
+            'Bucket' => 'intruders', // REQUIRED
+            'EncodingType' => 'url',
+            'Prefix' => 'faces',
+        ]);
+        $data = [];
+        // dd($result);
+        foreach($result as $key => $file) {
+            if ($key == 0) continue;
+            $data[] = ['url' => $baseUrl. $file['Key'], 'datetime' => $file['LastModified']->__toString()];
+        }
+        return view('intruder', ['pics' => $data]);
     }
 
 }

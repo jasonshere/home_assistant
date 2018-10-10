@@ -32,6 +32,9 @@ Route::get('/humidity.json', 'WeatherStationController@getHumidity');
 Route::get('/temperature', 'WeatherStationController@temperature');
 Route::get('/temperature.json', 'WeatherStationController@getTemperature');
 
+Route::get('/calendar', 'WeatherStationController@calendar');
+Route::get('/intruder', 'WeatherStationController@intruder');
+
 Route::get('/logout', function() {
     Auth::logout();
     return redirect('/login');
