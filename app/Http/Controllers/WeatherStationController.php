@@ -171,7 +171,7 @@ class WeatherStationController extends Controller
         $result = $s3->getIterator('ListObjectsV2', [
             'Bucket' => 'intruders', // REQUIRED
             'EncodingType' => 'url',
-            'Prefix' => 'faces',
+            'Prefix' => '',
         ]);
         $data = [];
         // dd($result);
