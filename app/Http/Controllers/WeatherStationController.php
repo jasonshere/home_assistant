@@ -166,7 +166,7 @@ class WeatherStationController extends Controller
      */
     public function intruder()
     {
-        $baseUrl = 'https://s3.amazonaws.com/intruders/';
+        $baseUrl = 'https://dn4qia2pvfeo3.cloudfront.net/';
         $s3 = \App::make('aws')->createClient('s3');
         $result = $s3->getIterator('ListObjectsV2', [
             'Bucket' => 'intruders', // REQUIRED
